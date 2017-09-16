@@ -1,0 +1,46 @@
+% Extended Simpsons family
+% (http://simpsons.wikia.com/wiki/Simpson_family)
+
+	father(homer, bart).
+	father(homer, lisa).
+	father(homer, maggie).	
+	father(abe, homer).
+	father(clancy, marge).
+	mother(marge, bart).
+	mother(marge, lisa).
+	mother(marge, maggie).
+	mother(mona, homer).
+	mother(ingrid, marge).
+	mother(lisa, zia).
+	mother(maggie, maggie_jr).
+	married(homer, marge).
+	married(homer, amber).
+	married(lisa, milhouse).
+	male(home).
+	male(bart).
+	male(abe).
+	male(clancy).
+	male(milhouse).
+	female(marge).
+	female(lisa).
+	female(maggie).
+	female(mona).
+	female(ingrid).
+	female(amber).
+	female(zia).
+	female(maggie_jr).
+
+	% Relationships
+	parent(X, Y) :- father(X, Y).
+	parent(X, Y) :- mother(X, Y).
+	grandfather(X, Y) :- father(X, Z), parent(Z, Y).
+	grandmother(X, Y) :- mother(X, Z), parent(Z, Y).
+	grandparent(X, Y) :- grandfather(X, Y).
+	grandparent(X, Y) :- grandmother(X, Y).
+	brother(X, Y) :- male(X), father(Z, X), father(Z, Y), Y \= X.
+	sister(X, Y) :- female(X), father(Z, X), father(Z, Y), Y \= X.
+	sibling(X, Y) :- brother(X, Y).
+	sibling(X, Y) :- sister(X, Y).
+	cousin(C1, C2) :- parent(P1, C1), parent(P2, C2), sibling(P1, P2).
+	mother_in_law(X, Y) :- married(Y, Z), mother(X, Z).
+	mother_in_law(X, Y) :- married(Z, Y), mother(X, Z).

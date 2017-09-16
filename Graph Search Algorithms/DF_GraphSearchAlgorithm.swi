@@ -1,0 +1,56 @@
+/* depth first graph search algorithm */
+/* expands the node on the deepest level of the tree */ 
+/* if search hits dead end backtrack and try the next unexpanded node at the deepest level */ 
+/* has time complexity O(b**m)*/
+/* has space complexity O(b * m)*/
+/* modifications include GCSE Lite which has space complexity O(m) */
+
+/* Access predicates */
+make_node( Rule, State, _, (Rule,State) ).
+
+state_of( (_,State), State ).
+
+loop_check( _, [] ).
+loop_check( State, [H|T] ) :-
+	state_of( H, AState ),
+	State \= AState,
+	loop_check( State, T ).
+
+choose( Path, [Path|Paths], Paths ).
+
+add_to_paths( NP, OP, AllP ) :-
+	append( NP, OP, AllP ).
+
+one_step_extensions( [Node|Path], NewPaths ) :-
+	state_of( Node, State ),
+	findall( [NewNode,Node|Path],
+		 ( statechange( Rule, State, NewState ),
+		   loop_check( NewState, [Node|Path] ),
+		   make_node( Rule, NewState, _, NewNode ) ),
+		 NewPaths ).
+
+/* General Graph Search Algorithm */
+search( Paths, [Node|Path], _ ) :-
+	choose( [Node|Path], Paths, _ ),
+	state_of( Node, State ),
+	goal_state( State ).
+
+search( Graph, SolnPath, Depth ) :-
+       choose( Path, Graph, GraphMinus ),
+       length( Path, PathLength ),
+       PathDepth is PathLength - 1,
+       PathDepth = Depth, !, %Note the ‘cut’ here
+       search( GraphMinus, SolnPath, Depth ).
+
+search( Paths, SolnPath, Depth ) :-
+	choose( Path, Paths, OtherPaths ),
+	one_step_extensions( Path, NewPaths ),
+	add_to_paths( NewPaths, OtherPaths, AllPaths ),
+	search( AllPaths, SolnPath, Depth ).
+
+id_search( Paths, SolnPath, Depth ) :-
+	search( Paths, SolnPath, Depth ).
+
+id_search( Paths, SolnPath, Depth ) :-
+	Depth1 is Depth + 1, write('new Depth: '),write(Depth1),nl,
+	id_search( Paths, SolnPath, Depth1 ).

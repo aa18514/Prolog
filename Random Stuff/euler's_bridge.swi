@@ -1,0 +1,35 @@
+/*
+ * Euler’s Bridge
+ *
+ * State Representation: (Term,List)
+ * Term is land mass a, b, c, d
+ * List of crossed bridges
+ *
+ * Initial State: (a, [])
+ *
+ * Goal State: (_,L), length(L, 7)
+ *
+ * Actions: Cross a bridge
+ *
+ * More: https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg
+ */
+/* State change rules */
+statechange( cross, (Location, Bridges), (NewLocation, [B|Bridges]) ) :-
+ 	is_connected( Location, B, NewLocation ),
+ 	not( member( B, Bridges ) ).
+
+is_connected( X, B, Y ) :-
+ connected( X, B, Y ).
+
+is_connected( X, B, Y ) :-
+ 	connected( Y, B, X ).
+	connected( a, 1, b ).
+	connected( a, 2, b ).
+	connected( a, 3, c ).
+	connected( a, 4, c ).
+	connected( a, 5, d ).
+	connected( b, 6, d ).
+	connected( c, 7, d ).
+	goal_state((_,L)) :-
+ 	length(L, 7).
+	

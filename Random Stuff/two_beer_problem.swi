@@ -1,0 +1,32 @@
+%You are given two beer glasses. You are told that one holds 7 pints and
+%the other holds 5 pints, but there are no measuring markers on either
+%of them. There is a beer pump that can be used to fill the glasses. You
+%are asked to get exactly 4 pints of beer into the 7-pint glass.
+%Formulate the search space in Prolog or other declarative notation,
+%so that it could be used with the Prolog General Graph Search Program
+%Indicate for each state-change rule, what action it represents in the real world.
+
+statechange( fill7, (S,F), (7,F) ) :-
+ S < 7.
+statechange( fill5, (S,F), (S,5) ) :-
+ F < 5.
+statechange( empty7, (S,F), (0,F) ) :-
+ S > 0.
+statechange( empty5, (S,F), (S,0) ) :-
+ F > 0.
+statechange( pour7to5, (S,F), (R,5) ) :-
+ All is S + F,
+ All > 5,
+ R is All - 5.
+statechange( pour7to5, (S,F), (0,All) ) :-
+ All is S + F,
+ All =< 5.
+statechange( pour5to7, (S,F), (7,R) ) :-
+ All is S + F,
+ All > 7,
+ R is All - 7.
+statechange( pour5to7, (S,F), (All,0) ) :-
+ All is S + F,
+ All =< 7.
+
+goal_state((4,_)).
